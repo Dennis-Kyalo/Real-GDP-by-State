@@ -1,0 +1,13 @@
+name: gdp_by_state_app
+title: gdp_by_state_app
+username:
+account: denniskyalo
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5553120
+bundleId: 5528788
+url: https://denniskyalo.shinyapps.io/gdp_by_state_app/
+when: 1643679343.09702
+lastSyncTime: 1643679343.09702
+asMultiple: FALSE
+asStatic: FALSE
