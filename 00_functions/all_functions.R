@@ -1,3 +1,71 @@
+gdp_growth_rate_plot <-
+function(data, name){
+    
+  g2 <- data %>% 
+        select(state, gdp, format_date, year, quarter) %>%
+        group_by(state) %>%
+        mutate(lag_1 = lag(gdp, n = 1)) %>%
+        mutate(lag_1 = case_when(is.na(lag_1) ~ gdp,
+                                 TRUE ~ lag_1)) %>%
+        summarise(
+            rate = (gdp - lag_1) / lag_1,
+            row                   = row_number(),
+            format_date           = format_date[row],
+            year                  = year[row],
+            quarter               = quarter[row]
+            
+        ) %>%
+        ungroup() %>%
+        mutate(rate_text = scales::percent(rate, accuracy = 0.1)) %>%
+        mutate(ind_cont_perc_text = str_glue("State : {state}
+                                          Growth Rate : {rate_text}
+                                         Duration : {year}-{quarter}")) %>%
+        mutate(pos = rate >= 0) %>%
+        
+        ggplot(aes(x = format_date, y = rate, fill = pos)) +
+        geom_col() +
+        # geom_line() +
+        geom_point(aes(text = ind_cont_perc_text),
+                   color = "#2c3e50",
+                   size = 0.01) +
+        # geom_smooth(method = "loess", span = 0.2) +
+        theme_tq() +
+        scale_fill_tq() +
+        expand_limits(y = 0) +
+        scale_y_continuous(labels = scales::percent_format()) +
+        labs(x = "",
+             y = "Growth rate",
+             title = str_glue("{name} Quarterly GDP Growth rate")) +
+        theme(legend.position = "none")
+    
+    
+    ggplotly(g2, tooltip = "text")
+    
+    
+}
+gdp_timeseries_plot <-
+function(data, name){
+    
+    g1 <- data %>%
+        ggplot(aes(x = format_date, y = gdp)) +
+        geom_line(color     = "#2c3e50") +
+        geom_point(aes(text = state_cont_perc_text),
+                   color    = "#2c3e50",
+                   size     = 0.01) +
+        geom_smooth(method  = "loess", span = 0.2) +
+        
+        theme_tq() +
+        scale_color_tq() +
+        expand_limits(y = 0) +
+        scale_y_log10(labels = scales::dollar_format(scale = 1/1000000)) +
+        labs(x = "", 
+             y = "GDP (Log Scale) Trillion",
+             title = str_glue("{name} GDP Plot"))
+    
+    
+    ggplotly(g1, tooltip = "text")
+    
+}
 time_picker_state <-
 function(data, time_unit = "quarter"){
     
@@ -31,13 +99,13 @@ function(data, time_unit = "quarter"){
             mutate(rank = dense_rank(desc(state_contribution))) %>%
             ungroup() %>%
             mutate(year     = year(format_date)) %>%
-            mutate(gdp_text = scales::dollar(gdp)) %>%
+            mutate(gdp_text = scales::dollar(gdp, scale = 1/1000000)) %>%
             mutate(state_cont_percent = state_contribution %>% scales::percent(accuracy = 0.1)) %>%
             mutate(
                 state_cont_perc_text = str_glue(
                                         "State: {state}
                                          Rank: {rank}
-                                         State GDP : {gdp_text} Million
+                                         State GDP : {gdp_text} Trillion
                                          Contribution to National GDP : {state_cont_percent}
                                          Duration: {year}-{quarter}"
                 )
@@ -73,8 +141,8 @@ function(data, time_unit = "quarter"){
         # to retain the state column
         summarise(
             row                   = row_number(),
-            state_contribution = yearly_gdp / first_gdp,
-            state              = state[row],
+            state_contribution    = yearly_gdp / first_gdp,
+            state                 = state[row],
             yearly_gdp            = yearly_gdp[row],
             abb       = abb[row]
             
@@ -95,13 +163,13 @@ function(data, time_unit = "quarter"){
             mutate(rank = dense_rank(desc(state_contribution))) %>%
             ungroup() %>%
             mutate(year = year(format_date)) %>%
-            mutate(gdp_text         = scales::dollar(gdp)) %>%
+            mutate(gdp_text         = scales::dollar(gdp, scale = 1/1000000)) %>%
             mutate(state_cont_percent = state_contribution %>% scales::percent(accuracy = 0.1)) %>%
             mutate(
                 state_cont_perc_text  = str_glue(
                                         "State: {state}
                                          Rank : {rank}
-                                         State GDP : {scales::dollar(gdp)} Million
+                                         State GDP : {scales::dollar(gdp)} Trillion
                                          Contribution to National GDP : {state_cont_percent}
                                          Duration: {year}"
                 )
@@ -159,3 +227,21 @@ function(data, state_name = "United States") {
     }
     
 }
+info_card <-
+function(title, value,
+             main_icon = "chart-line",
+             bg_color = "default", text_color = "default") {
+        
+        div(
+            class = "panel panel-default",
+            style = "padding: 0px;",
+            div(
+                class = str_glue("panel-body bg-{bg_color} text-{text_color}"),
+                p(class = "pull-right", icon(class = "fa-2x", main_icon)),
+                h4(title),
+                h5(value),
+                
+            )
+        )
+        
+    }
