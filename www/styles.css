@@ -1,0 +1,96 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Katibeh&display=swap");
+
+h2 {
+    font-family: "Katibeh", "Times New Roman";
+    text-align: center;
+    font-size: 70px;
+}
+
+
+
+h3{
+    
+    font-family: "Times New Roman";
+}
+
+
+
+h4{
+    text-align: center;
+    font-family: "Times New Roman",sans-serif;
+    font-weight: 500;
+    line-height: 1.1;
+    color: #ffffff;
+}
+
+
+.bootstrap-select .dropdown-toggle .filter-option {
+
+    text-align: center;
+    
+}
+
+
+label {
+    display: inline;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: center;
+}
+
+
+pre.shiny-text-output {
+    word-wrap: normal;
+    font-family: "Times New Roman";
+    text-align: center;
+    font-size: inherit;
+}
+
+
+#date_range {
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-color: darkgray;
+}
+
+
+
+#pickers {
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-color: darkgray;
+}
+
+
+#about_data {
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-color: darkgray;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
