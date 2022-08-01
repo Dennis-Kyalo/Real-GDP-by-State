@@ -23,7 +23,7 @@ metrics_data %>%
     filter(year == "2005" & quarter == "Q1") %>% 
     filter(state %in% "United States") %>% 
     pull(gdp) %>% 
-    scales::number(big.mark = ",", suffix = "M", prefix = "$")
+    scales::number(big.mark = ",", suffix = "T", prefix = "$", scale = 1/1000000, accuracy = 0.01)
 
 ### Metric 2 - state contribution to GDP ----
 metrics_data %>% View() 

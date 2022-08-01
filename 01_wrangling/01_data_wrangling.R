@@ -41,13 +41,13 @@ time_picker_state <- function(data, time_unit = "quarter"){
             mutate(rank = dense_rank(desc(state_contribution))) %>%
             ungroup() %>%
             mutate(year     = year(format_date)) %>%
-            mutate(gdp_text = scales::dollar(gdp)) %>%
+            mutate(gdp_text = scales::dollar(gdp, scale = 1/1000000)) %>%
             mutate(state_cont_percent = state_contribution %>% scales::percent(accuracy = 0.1)) %>%
             mutate(
                 state_cont_perc_text = str_glue(
                                         "State: {state}
                                          Rank: {rank}
-                                         State GDP : {gdp_text} Million
+                                         State GDP : {gdp_text} Trillion
                                          Contribution to National GDP : {state_cont_percent}
                                          Duration: {year}-{quarter}"
                 )
@@ -83,8 +83,8 @@ time_picker_state <- function(data, time_unit = "quarter"){
         # to retain the state column
         summarise(
             row                   = row_number(),
-            state_contribution = yearly_gdp / first_gdp,
-            state              = state[row],
+            state_contribution    = yearly_gdp / first_gdp,
+            state                 = state[row],
             yearly_gdp            = yearly_gdp[row],
             abb       = abb[row]
             
@@ -105,13 +105,13 @@ time_picker_state <- function(data, time_unit = "quarter"){
             mutate(rank = dense_rank(desc(state_contribution))) %>%
             ungroup() %>%
             mutate(year = year(format_date)) %>%
-            mutate(gdp_text         = scales::dollar(gdp)) %>%
+            mutate(gdp_text         = scales::dollar(gdp, scale = 1/1000000)) %>%
             mutate(state_cont_percent = state_contribution %>% scales::percent(accuracy = 0.1)) %>%
             mutate(
                 state_cont_perc_text  = str_glue(
                                         "State: {state}
                                          Rank : {rank}
-                                         State GDP : {scales::dollar(gdp)} Million
+                                         State GDP : {scales::dollar(gdp)} Trillion
                                          Contribution to National GDP : {state_cont_percent}
                                          Duration: {year}"
                 )
@@ -122,7 +122,7 @@ time_picker_state <- function(data, time_unit = "quarter"){
     
 }        
 
-stategdp_wrangled_tbl %>% time_picker_state(time_unit = "quarter") 
+stategdp_wrangled_tbl %>% time_picker_state(time_unit = "quarter") %>% View
 fs::dir_create(path = "00_functions")
 dump(list = "time_picker_state", file = "00_functions/all_functions.R")        
 
@@ -200,8 +200,8 @@ stategdp_wrangled_tbl %>%
     # to retain the state column
     summarise(
         row                   = row_number(),
-        state_contribution = yearly_gdp / first_gdp,
-        state              = state[row],
+        state_contribution    = yearly_gdp / first_gdp,
+        state                 = state[row],
         yearly_gdp            = yearly_gdp[row]
         
     ) %>%
